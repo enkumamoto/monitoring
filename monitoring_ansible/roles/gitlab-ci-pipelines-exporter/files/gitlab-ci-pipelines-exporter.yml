@@ -1,0 +1,7 @@
+gitlab:
+  url: https://eita.io/
+  token: glpat-zacDsd4WaZ1JSG_yYPZ4
+
+projects:
+  - name: credere/banks-api
+  - name: credere/web

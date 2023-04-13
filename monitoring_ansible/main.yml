@@ -1,0 +1,29 @@
+- hosts: webserver
+  become: yes
+  remote_user: admin
+  roles:
+    - role: grafana
+      tags: grafana
+    - role: node
+      tags: prometheus
+    - role: grafana_plugins
+      tags: grafana
+    
+- hosts: prometheus
+  become: yes
+  remote_user: admin
+  vars:
+    prometheus_version: 2.32.1
+  roles:
+    - role: alertmanager
+      tags: alertmanager
+    - role: prometheus
+      tags: prometheus
+    - role: blackbox
+      tags: prometheus
+    - role: process_exporter
+      tags: prometheus
+    - role: postgres_exporter
+      tags: postgres
+    - role: gitlab-ci-pipelines-exporter
+      tags: gitlab-ci 

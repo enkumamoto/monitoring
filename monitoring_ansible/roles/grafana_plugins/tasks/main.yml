@@ -1,0 +1,43 @@
+---
+- name: Install/update Grafana athena datasource plugin
+  grafana_plugin:
+    name: grafana-athena-datasource
+    version: latest
+    state: present
+
+- name: Install/update Grafana polystat panel plugin
+  grafana_plugin:
+    name: grafana-polystat-panel
+    version: latest
+    state: present
+
+- name: Install/update Grafana image render plugin
+  grafana_plugin:
+    name: grafana-image-renderer
+    version: latest
+    state: present
+
+- name: Install/update Grafana piechart panel plugin
+  grafana_plugin:
+    name: grafana-piechart-panel
+    version: latest
+    state: present
+
+- name: Install/update Grafana breadcrumb-panel plugin
+  grafana_plugin:
+    name: digiapulssi-breadcrumb-panel
+    version: latest
+    state: present
+
+- name: Install/update Grafana marcusolsson-dynamictext-panel
+  grafana_plugin:
+    name: marcusolsson-dynamictext-panel
+    version: latest
+    state: present
+
+- name: Starting the grafana service
+  service:
+    name: grafana-server
+    enabled: yes
+    state: restarted
+

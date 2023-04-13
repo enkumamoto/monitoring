@@ -1,0 +1,78 @@
+  - name: download the files and unzip
+    unarchive:
+      src: https://github.com/prometheus/alertmanager/releases/download/v0.23.0/alertmanager-0.23.0.linux-amd64.tar.gz
+      dest: /tmp
+      remote_src: yes
+
+  - name: Copy the unzipped files to the bin folder
+    ansible.builtin.copy:
+      remote_src: yes
+      src: /tmp/alertmanager-0.23.0.linux-amd64/
+      dest: /usr/local/bin/
+      owner: prometheus
+      group: prometheus
+      mode: u+x,g+x,o+x
+
+  - name: Create directory alertmanager
+    file:
+      path: "/etc/alertmanager"
+      state: directory
+      owner: prometheus
+      mode: 0755
+
+  - name: Create the alertmanager.service file
+    blockinfile:
+      path: /etc/systemd/system/alertmanager.service
+      block: |
+          [Unit]
+          Description=alertmanager
+          Wants=network-online.target
+          After=network-online.target
+          
+          [Service]
+          User=prometheus
+          Group=prometheus
+          Type=simple
+          ExecStart=/usr/local/bin/alertmanager --config.file=/etc/alertmanager/alertmanager.yml --storage.path /var/lib/alertmanager/data
+          
+          [Install]
+          WantedBy=multi-user.target
+      create: true
+
+  - name: creating data directory
+    file:
+      path: "/var/lib/alertmanager/data"
+      state: directory
+      owner: prometheus
+      group: prometheus
+      mode: 0755
+
+  - name: Copy updated alertmanager configuration file
+    ansible.builtin.copy:
+      src: alertmanager.yml
+      dest: /etc/alertmanager/alertmanager.yml
+      owner: prometheus
+      group: prometheus
+  
+  - name: Copy alert rules configuration file
+    ansible.builtin.copy:
+      src: alert.rules.yml
+      dest: /etc/prometheus/alert.rules.yml
+      owner: prometheus
+      group: prometheus
+
+  - name: systemctl daemon_reload
+    systemd:
+      daemon_reload: yes   
+
+  - name: Start the service and configure to start the service when starting the machine
+    service:
+      name: alertmanager
+      state: started
+      enabled: yes
+
+  - name: reload no daemon
+    shell: systemctl daemon-reload
+    
+
+ 

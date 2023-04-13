@@ -1,0 +1,38 @@
+- name: Install apt-transport-https
+  apt:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+  loop:
+    - gnupg
+    - software-properties-common
+    - apt-transport-https
+
+- name: Create gpg.key
+  apt_key:
+    url: "https://packages.grafana.com/gpg.key"
+            
+- name: Adding repository
+  apt_repository:
+    repo: deb https://packages.grafana.com/oss/deb stable main
+    state: present
+    filename: grafana
+
+- name: Installing grafana
+  apt:
+    name: grafana
+    state: latest
+    update_cache: yes
+
+- name: Copy configuration file
+  ansible.builtin.copy:
+    src: grafana.ini
+    dest: /etc/grafana/grafana.ini
+    owner: grafana
+    group: grafana
+
+- name: Starting the grafana service
+  service:
+    name: grafana-server
+    enabled: yes
+    state: restarted

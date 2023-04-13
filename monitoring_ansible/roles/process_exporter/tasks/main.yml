@@ -1,0 +1,57 @@
+- name: create process_exporter system group
+  user:
+     name: process_exporter
+     shell: /bin/false
+     system: true
+     create_home: no
+
+- name: Download and unarchive 
+  unarchive:
+    src: https://github.com/ncabatoff/process-exporter/releases/download/v0.7.10/process-exporter-0.7.10.linux-amd64.tar.gz
+    dest: /etc
+    remote_src: yes
+
+- name: Copy the unzipped files to the bin folder
+  ansible.builtin.copy:
+    remote_src: yes
+    src: /etc/process-exporter-0.7.10.linux-amd64/process-exporter
+    dest: /usr/local/bin/
+    owner: process_exporter
+    group: process_exporter
+    mode: u+x,g+x,o+x
+
+- name: creating directory
+  file:
+    path: "/etc/process_exporter"
+    state: directory
+    owner: process_exporter
+    mode: 0755
+
+- name: Create process_exporter.yml configuration file
+  ansible.builtin.copy:
+    src: process_exporter.yml
+    dest: /etc/process_exporter/process_exporter.yml
+    owner: process_exporter
+    group: process_exporter  
+
+- name: Create process_exporter.service configuration file
+  ansible.builtin.copy:
+    src: process-exporter.service
+    dest: /etc/systemd/system
+    owner: process_exporter
+    group: process_exporter
+    mode: 0755
+
+- name: daemon-reload
+  shell: systemctl daemon-reload
+
+- name: start process_exporter
+  shell: systemctl restart process-exporter
+
+- name: start prometheus
+  shell: systemctl restart prometheus.service
+
+- name: Configure to start process_exporter with machine start
+  service: 
+    name: process-exporter
+    enabled: yes

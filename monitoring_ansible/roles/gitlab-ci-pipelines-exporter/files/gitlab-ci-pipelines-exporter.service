@@ -1,0 +1,15 @@
+[Unit]
+Description=gitlab-ci-pipelines-exporter
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+User=gitlab-ci-pipelines-exporter
+Group=gitlab-ci-pipelines-exporter
+Type=simple
+ExecStart= gitlab-ci-pipelines-exporter run -c /etc/gitlab-ci-pipelines-exporter/gitlab-ci-pipelines-exporter.yml
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

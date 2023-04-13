@@ -1,0 +1,136 @@
+#jinja2:lstrip_blocks: True
+global:
+  scrape_interval: 10s
+
+
+rule_files:
+  - alert.rules.yml
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - {{groups['prometheus'] | first}}:9093
+
+
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets:
+        - {{groups['prometheus'] | first}}:9090
+        labels:
+           stack: 'monitoring'
+  
+  - job_name: 'grafana'
+    scrape_interval: 5s
+    static_configs:
+      - targets: 
+      {% for server in groups['webserver'] %}
+        - {{server}}:3000
+      {% endfor %}
+        labels:
+          stack: 'monitoring'
+       
+  - job_name: 'node_exporter'
+    scrape_interval: 5s
+    static_configs:
+      - targets: 
+      {% for server in groups['webserver'] %}
+        - {{server}}:9100
+      {% endfor %}
+        labels:
+           stack: 'monitoring'
+
+  - job_name: 'process_exporter'
+    scrape_interval: 10s
+    static_configs:
+       - targets:  
+          - {{groups['prometheus'] | first}}:9256
+    metric_relabel_configs:
+      - source_labels: ["groupname"]
+        regex: "(.*);(.*)"
+        target_label: "processname"
+        replacement: "$1"
+      - source_labels: ["groupname"]
+        regex: "(.*);(.*)"
+        target_label: "username"
+        replacement: "$2"
+  
+  - job_name: 'federate'
+    scrape_interval: 15s
+    honor_labels: true
+    metrics_path: '/federate'
+    params:
+      'match[]':
+            - '{job!=""}'
+    static_configs:
+      - targets:   
+          - prometheus.internal.eita.io
+        
+
+  - job_name: 'blackbox-https'
+    scrape_timeout: 5s
+    scrape_interval: 5s
+    metrics_path: /probe
+    params:
+      module: [http_2xx]  
+    static_configs:
+      - targets:
+        - https://eita.io
+        - https://meucredere.com.br
+        - https://app.meucredere.com.br
+        - https://dash.eita.io
+        - https://ajuda.meucredere.com.br
+        - https://monitoring.eita.io
+
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: {{groups['prometheus'] | first}}:9115
+  
+  - job_name: 'kafka'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['b-1.credere-staging.i4coa3.c13.kafka.us-east-1.amazonaws.com:11001', 'b-2.credere-staging.i4coa3.c13.kafka.us-east-1.amazonaws.com:11001']
+        labels:
+           job: 'kafka'
+           environment: 'staging'
+      - targets: ['b-1.credere-production.4qxpsl.c13.kafka.us-east-1.amazonaws.com:11001', 'b-2.credere-production.4qxpsl.c13.kafka.us-east-1.amazonaws.com:11001']
+        labels:
+           job: 'kafka'
+           environment: 'production'
+  
+  - job_name: 'kafka-node'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['b-1.credere-staging.i4coa3.c13.kafka.us-east-1.amazonaws.com:11002', 'b-2.credere-staging.i4coa3.c13.kafka.us-east-1.amazonaws.com:11002']
+        labels:
+           job: 'node'
+           environment: 'staging'
+      - targets: ['b-1.credere-production.4qxpsl.c13.kafka.us-east-1.amazonaws.com:11002', 'b-2.credere-production.4qxpsl.c13.kafka.us-east-1.amazonaws.com:11002']
+        labels:
+           job: 'node'
+           environment: 'production'
+
+  - job_name: 'postgres'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [':9187']
+
+  - job_name: 'gitlab-runner'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['10.30.130.168:9252']  
+      
+  - job_name: gitlab-ci-pipelines-exporter
+    # honor_timestamps: true
+    scrape_interval: 10s
+    scrape_timeout: 5s
+    metrics_path: /metrics
+    scheme: http
+    follow_redirects: true
+    static_configs:
+      - targets: ['10.30.130.121:8080'] 

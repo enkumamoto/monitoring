@@ -1,0 +1,104 @@
+
+
+  - name: Download the files and unzip
+    unarchive:
+      src: "https://github.com/prometheus/prometheus/releases/download/v{{prometheus_version}}/prometheus-{{prometheus_version}}.linux-amd64.tar.gz"
+      dest: /tmp
+      remote_src: yes
+  
+  - name: Create prometheus system group
+    group:
+      name: prometheus
+      system: true
+      state: present
+
+  - name: Create prometheus system user
+    user:
+      name: prometheus
+      system: true
+      shell: "/usr/sbin/nologin"
+      group: prometheus
+      createhome: false
+      home: "/var/lib/prometheus"
+
+  - name: Creating Prometheus Directories and Setting the Prometheus User as Owner of Those Directories
+    file:
+      path: "/etc/prometheus"
+      state: directory
+      owner: prometheus
+      group: prometheus
+      mode: 0755     
+
+  - name: Creating Prometheus Directories and Setting the Prometheus User as Owner of Those Directories
+    file:
+      path: "/var/lib/prometheus"
+      state: directory
+      owner: prometheus
+      group: prometheus
+      mode: 0755
+
+  - name: Copy prometheus folder to bin folder
+    ansible.builtin.copy:
+      remote_src: yes
+      src: "/tmp/prometheus-{{prometheus_version}}.linux-amd64/prometheus"
+      dest: /usr/local/bin/
+      owner: prometheus
+      group: prometheus
+      mode: 0755
+
+  - name: Copy promtool folder to bin folder
+    ansible.builtin.copy:
+      remote_src: yes
+      src: "/tmp/prometheus-{{prometheus_version}}.linux-amd64/promtool"
+      dest: /usr/local/bin/
+      owner: prometheus
+      group: prometheus
+      mode: 0755
+
+  - name: copy the consoles
+    ansible.builtin.copy:
+      remote_src: yes
+      src: "/tmp/prometheus-{{prometheus_version}}.linux-amd64/consoles"
+      dest: /etc/prometheus/
+      owner: prometheus
+      group: prometheus
+      mode: 0755
+
+  - name: Copy console_libraries
+    ansible.builtin.copy:
+      remote_src: yes
+      src: "/tmp/prometheus-{{prometheus_version}}.linux-amd64/console_libraries"
+      dest: /etc/prometheus/
+      owner: prometheus
+      group: prometheus
+      mode: 0755
+  
+  - name: Copying prometheus.service
+    ansible.builtin.copy:
+      src: prometheus.service
+      dest: /etc/systemd/system
+      owner: prometheus
+      group: prometheus
+      mode: 0755
+
+  - name: Copy configuration file prometheus.yml (with Node_exporter and Alertmanager and Blackbox)
+    ansible.builtin.template:
+      src: prometheus.yml.j2
+      dest: /etc/prometheus/prometheus.yml
+      owner: prometheus
+      group: prometheus
+
+  - name: Just force systemd to reread configs 
+    ansible.builtin.systemd:
+        daemon_reload: yes
+
+  - name: reload no daemon
+    shell: systemctl daemon-reload
+  
+  - name: restart prometheus
+    shell: systemctl restart prometheus
+
+  - name: Configure to start with machine start
+    service: 
+      name: prometheus
+      enabled: yes

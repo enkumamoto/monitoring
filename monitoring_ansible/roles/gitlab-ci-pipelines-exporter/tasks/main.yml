@@ -1,0 +1,53 @@
+- name: create gitlab-ci-pipelines-exporter system group
+  user:
+     name: gitlab-ci-pipelines-exporter
+     shell: /bin/false
+     system: true
+     create_home: no
+
+- name: Download and unarchive gitlab-ci-pipelines-exporter 
+  unarchive:
+    src: https://github.com/mvisonneau/gitlab-ci-pipelines-exporter/releases/download/v0.5.3/gitlab-ci-pipelines-exporter_edge_linux_amd64.tar.gz
+    dest: /tmp
+    remote_src: yes
+
+- name: Copy the unzipped files to the bin folder
+  ansible.builtin.copy:
+    remote_src: yes
+    src: /tmp/gitlab-ci-pipelines-exporter
+    dest: /usr/local/bin/
+    owner: gitlab-ci-pipelines-exporter
+    group: gitlab-ci-pipelines-exporter
+    mode: u+x,g+x,o+x
+
+- name: creating directory
+  file:
+    path: "/etc/gitlab-ci-pipelines-exporter"
+    state: directory
+    owner: gitlab-ci-pipelines-exporter
+    mode: 0755
+- name: Create gitlab-ci-pipelines-exporter.service configuration file
+  ansible.builtin.copy:
+    src: gitlab-ci-pipelines-exporter.service
+    dest: /etc/systemd/system
+    owner: gitlab-ci-pipelines-exporter
+    group: gitlab-ci-pipelines-exporter
+    mode: 0755
+
+- name: Create gitlab-ci-pipelines-exporter.yml configuration file
+  ansible.builtin.copy:
+    src: gitlab-ci-pipelines-exporter.yml
+    dest: /etc/gitlab-ci-pipelines-exporter/gitlab-ci-pipelines-exporter.yml
+    owner: gitlab-ci-pipelines-exporter
+    group: gitlab-ci-pipelines-exporter
+
+- name: daemon-reload
+  shell: systemctl daemon-reload
+
+- name: start gitlab-ci-pipelines-exporter
+  shell: systemctl restart gitlab-ci-pipelines-exporter
+
+- name: Configure to start gitlab-ci-pipelines-exporter with machine start
+  service: 
+    name: gitlab-ci-pipelines-exporter
+    enabled: yes
