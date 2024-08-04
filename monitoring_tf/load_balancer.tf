@@ -1,5 +1,5 @@
-resource "aws_lb" "monitoring-production" {
-  name               = "monitoring-production"
+resource "aws_lb" "monitoring-production" {   # This 
+  name               = var.blabla# "monitoring-production"
   internal           = true
   load_balancer_type = "application"
   security_groups    = [aws_security_group.monitoring_sg.id]
