@@ -30,8 +30,6 @@ flowchart TB
     EC2 --> GitlabExporter
 ```
 
----
-
 📁 Estrutura do Projeto
 .
 ├── monitoring_ansible
