@@ -34,7 +34,7 @@ flowchart TB
 
 ---
 
-```
+```bash
 .
 ├── monitoring_ansible
 │ ├── hosts
@@ -58,9 +58,13 @@ flowchart TB
 ├── security_rules.tf
 ├── variables.tf
 └── vpc.tf
-⚙️ Tecnologias
-Terraform
 ```
+
+⚙️ Tecnologias
+
+---
+
+1. Terraform
 
 ☁️ Infraestrutura na AWS
 
@@ -71,13 +75,11 @@ Terraform
 3. Application Load Balancer
 4. Security Groups
 
-
 🤖 Serviços de Automação
 
 ---
 
 1. Ansible (Provisionamento e Configuração)
-
 
 🖥️ Serviços de Monitoramento e Observabilidade
 
@@ -87,8 +89,6 @@ Terraform
 2. Grafana (Visualização de dados)
 3. Alertmanager (Gestão de alertas)
 4. Node/Process Exporters (Exportação de métricas)
-
-
 
 📋 Pré-requisitos
 
@@ -109,6 +109,7 @@ terraform apply -var-file=monitoring.tfvars
 ```
 
 ---
+
 Saídas esperadas após o deploy:
 
 IP Público: Endereço da instância para acesso administrativo.
@@ -118,11 +119,16 @@ DNS do Load Balancer: Endpoint para acesso aos serviços de monitoramento.
 ⚙️ Configuração e Deploy de Serviços (Ansible)
 
 ---
+
 Primeiro, atualize o inventário no arquivo hosts:
 
 Ini, TOML
 [monitoring]
+
+```bash
 X.X.X.X ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/monitoring.pem
+```
+
 Em seguida, execute o Playbook:
 
 ```bash
@@ -132,11 +138,15 @@ ansible-playbook -i hosts main.yml
 
 🌐 Acessos e Endpoints
 
+---
+
 Grafana: http://<ALB_DNS>:3000
 
 Prometheus: http://<ALB_DNS>:9090
 
 🔐 Segurança e Boas Práticas
+
+---
 
 Controle de tráfego restrito via Security Groups.
 
@@ -146,10 +156,16 @@ Load Balancer: Configurado como interno por padrão (pode ser alterado para púb
 
 🧹 Limpeza de Recursos (Destroy)
 
-Bash
+---
+
+```bash
 cd monitoring_tf
 terraform destroy -var-file=monitoring.tfvars
+```
+
 📌 Estrutura de Arquivos
+
+---
 
 As configurações customizadas dos serviços estão localizadas em:
 
@@ -157,7 +173,12 @@ roles/\*/files: Arquivos estáticos e binários.
 
 roles/\*/templates: Arquivos de configuração dinâmicos (Jinja2).
 
-Nota: Os plugins do Grafana e dashboards base são provisionados automaticamente durante a execução da Role.
+# Nota:
+
+- Os plugins do Grafana e dashboards base são provisionados automaticamente durante a execução da Role.
 
 👨‍💻 Sobre o Projeto
+
+---
+
 Iniciativa focada no estudo de Infrastructure as Code (IaC) e automação de ambientes escaláveis para monitoramento.
