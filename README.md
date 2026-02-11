@@ -62,28 +62,33 @@ flowchart TB
 Terraform
 ```
 
-AWS (VPC, EC2, ALB, Security Groups)
+# AWS
 
-Ansible
+1. VPC
+2. EC2
+3. Load Balancer
+4. Security Groups
 
-Prometheus
+# Automação
 
-Grafana
+1. Ansible
 
-Alertmanager
+# Ferramentas de monitoramento e métricas
 
-Exporters
+1. Prometheus
+2. Grafana
+3. Alertmanager
+4. Exporters
+
+---
 
 📋 Pré-requisitos
-AWS CLI configurado
 
-Terraform >= 1.x
-
-Ansible >= 2.10
-
-Chave SSH válida
-
-Conta AWS
+1. AWS CLI configurado
+2. Terraform >= 1.x
+3. Ansible >= 2.10
+4. Chave SSH válida
+5. Conta AWS
 
 🚀 Deploy da Infraestrutura (Terraform)
 cd monitoring_tf
