@@ -31,6 +31,9 @@ flowchart TB
 ```
 
 📁 Estrutura do Projeto
+
+---
+
 .
 ├── monitoring_ansible
 │ ├── hosts
