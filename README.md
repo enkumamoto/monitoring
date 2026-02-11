@@ -63,37 +63,44 @@ Terraform
 ```
 
 ☁️ Infraestrutura na AWS
-VPC (Virtual Private Cloud)
 
-EC2 (Elastic Compute Cloud)
+---
 
-Application Load Balancer
+1. VPC (Virtual Private Cloud)
+2. EC2 (Elastic Compute Cloud)
+3. Application Load Balancer
+4. Security Groups
 
-Security Groups
+---
 
 🤖 Serviços de Automação
-Ansible (Provisionamento e Configuração)
+
+---
+
+1. Ansible (Provisionamento e Configuração)
+
+---
 
 🖥️ Serviços de Monitoramento e Observabilidade
-Prometheus (Coleta de métricas)
 
-Grafana (Visualização de dados)
+---
 
-Alertmanager (Gestão de alertas)
+1. Prometheus (Coleta de métricas)
+2. Grafana (Visualização de dados)
+3. Alertmanager (Gestão de alertas)
+4. Node/Process Exporters (Exportação de métricas)
 
-Node/Process Exporters (Exportação de métricas)
+---
 
 📋 Pré-requisitos
 
-AWS CLI devidamente configurado
+---
 
-Terraform >= 1.x
-
-Ansible >= 2.10
-
-Par de Chaves SSH (arquivo .pem)
-
-Conta AWS com permissões administrativas
+1. AWS CLI devidamente configurado
+2. Terraform >= 1.x
+3. Ansible >= 2.10
+4. Par de Chaves SSH (arquivo .pem)
+5. Conta AWS com permissões administrativas
 
 🚀 Provisionamento da Infraestrutura (Terraform)
 
