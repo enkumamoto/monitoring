@@ -71,7 +71,6 @@ Terraform
 3. Application Load Balancer
 4. Security Groups
 
----
 
 🤖 Serviços de Automação
 
@@ -79,7 +78,6 @@ Terraform
 
 1. Ansible (Provisionamento e Configuração)
 
----
 
 🖥️ Serviços de Monitoramento e Observabilidade
 
@@ -90,7 +88,7 @@ Terraform
 3. Alertmanager (Gestão de alertas)
 4. Node/Process Exporters (Exportação de métricas)
 
----
+
 
 📋 Pré-requisitos
 
@@ -104,12 +102,13 @@ Terraform
 
 🚀 Provisionamento da Infraestrutura (Terraform)
 
-```
+```bash
 cd monitoring_tf
 terraform init
 terraform apply -var-file=monitoring.tfvars
 ```
 
+---
 Saídas esperadas após o deploy:
 
 IP Público: Endereço da instância para acesso administrativo.
@@ -118,6 +117,7 @@ DNS do Load Balancer: Endpoint para acesso aos serviços de monitoramento.
 
 ⚙️ Configuração e Deploy de Serviços (Ansible)
 
+---
 Primeiro, atualize o inventário no arquivo hosts:
 
 Ini, TOML
@@ -125,9 +125,11 @@ Ini, TOML
 X.X.X.X ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/monitoring.pem
 Em seguida, execute o Playbook:
 
-Bash
+```bash
 cd monitoring_ansible
 ansible-playbook -i hosts main.yml
+```
+
 🌐 Acessos e Endpoints
 
 Grafana: http://<ALB_DNS>:3000
