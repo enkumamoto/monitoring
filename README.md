@@ -34,6 +34,7 @@ flowchart TB
 
 ---
 
+```
 .
 ├── monitoring_ansible
 │ ├── hosts
@@ -59,6 +60,7 @@ flowchart TB
 └── vpc.tf
 ⚙️ Tecnologias
 Terraform
+```
 
 AWS (VPC, EC2, ALB, Security Groups)
 
