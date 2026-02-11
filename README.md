@@ -28,33 +28,34 @@ flowchart TB
     EC2 --> BlackboxExporter
     EC2 --> ProcessExporter
     EC2 --> GitlabExporter
+```
 
 ---
 
 📁 Estrutura do Projeto
 .
 ├── monitoring_ansible
-│   ├── hosts
-│   ├── main.yml
-│   └── roles
-│       ├── alertmanager
-│       ├── blackbox
-│       ├── gitlab-ci-pipelines-exporter
-│       ├── grafana
-│       ├── grafana_plugins
-│       ├── node
-│       ├── process_exporter
-│       └── prometheus
+│ ├── hosts
+│ ├── main.yml
+│ └── roles
+│ ├── alertmanager
+│ ├── blackbox
+│ ├── gitlab-ci-pipelines-exporter
+│ ├── grafana
+│ ├── grafana_plugins
+│ ├── node
+│ ├── process_exporter
+│ └── prometheus
 │
 └── monitoring_tf
-    ├── load_balancer.tf
-    ├── main.tf
-    ├── monitoring.tf
-    ├── monitoring.tfvars
-    ├── outputs.tf
-    ├── security_rules.tf
-    ├── variables.tf
-    └── vpc.tf
+├── load_balancer.tf
+├── main.tf
+├── monitoring.tf
+├── monitoring.tfvars
+├── outputs.tf
+├── security_rules.tf
+├── variables.tf
+└── vpc.tf
 ⚙️ Tecnologias
 Terraform
 
@@ -120,12 +121,15 @@ terraform destroy -var-file=monitoring.tfvars
 📌 Observações
 Configurações dos serviços ficam em:
 
-roles/*/files
+roles/\*/files
 
-roles/*/templates
+roles/\*/templates
 
 Plugins do Grafana são instalados automaticamente via role.
 
 👨‍💻 Autor
 Projeto de estudo e automação de infraestrutura para monitoramento utilizando Infrastructure as Code.
+
+```
+
 ```
