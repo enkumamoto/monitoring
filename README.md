@@ -62,82 +62,93 @@ flowchart TB
 Terraform
 ```
 
-# AWS
+☁️ Infraestrutura na AWS
+VPC (Virtual Private Cloud)
 
-1. VPC
-2. EC2
-3. Load Balancer
-4. Security Groups
+EC2 (Elastic Compute Cloud)
 
-# Automação
+Application Load Balancer
 
-1. Ansible
+Security Groups
 
-# Ferramentas de monitoramento e métricas
+🤖 Serviços de Automação
+Ansible (Provisionamento e Configuração)
 
-1. Prometheus
-2. Grafana
-3. Alertmanager
-4. Exporters
+🖥️ Serviços de Monitoramento e Observabilidade
+Prometheus (Coleta de métricas)
 
----
+Grafana (Visualização de dados)
+
+Alertmanager (Gestão de alertas)
+
+Node/Process Exporters (Exportação de métricas)
 
 📋 Pré-requisitos
 
-1. AWS CLI configurado
-2. Terraform >= 1.x
-3. Ansible >= 2.10
-4. Chave SSH válida
-5. Conta AWS
+AWS CLI devidamente configurado
 
-🚀 Deploy da Infraestrutura (Terraform)
+Terraform >= 1.x
+
+Ansible >= 2.10
+
+Par de Chaves SSH (arquivo .pem)
+
+Conta AWS com permissões administrativas
+
+🚀 Provisionamento da Infraestrutura (Terraform)
+
+```
 cd monitoring_tf
 terraform init
 terraform apply -var-file=monitoring.tfvars
-Após o apply:
+```
 
-IP público da instância será exibido
+Saídas esperadas após o deploy:
 
-DNS do Load Balancer será exibido
+IP Público: Endereço da instância para acesso administrativo.
 
-⚙️ Configuração dos Serviços (Ansible)
-Editar o arquivo hosts:
+DNS do Load Balancer: Endpoint para acesso aos serviços de monitoramento.
 
+⚙️ Configuração e Deploy de Serviços (Ansible)
+
+Primeiro, atualize o inventário no arquivo hosts:
+
+Ini, TOML
 [monitoring]
 X.X.X.X ansible_user=ec2-user ansible_ssh_private_key_file=~/.ssh/monitoring.pem
-Executar:
+Em seguida, execute o Playbook:
 
+Bash
 cd monitoring_ansible
 ansible-playbook -i hosts main.yml
-🌐 Acessos
-Grafana:
-http://<ALB_DNS>:3000
+🌐 Acessos e Endpoints
 
-Prometheus:
-http://<ALB_DNS>:9090
+Grafana: http://<ALB_DNS>:3000
 
-🔐 Segurança
-Acesso via Security Groups
+Prometheus: http://<ALB_DNS>:9090
 
-Serviços expostos somente pelas portas necessárias
+🔐 Segurança e Boas Práticas
 
-Load Balancer configurado como interno (ajustável via variável)
+Controle de tráfego restrito via Security Groups.
 
-🧹 Destroy
+Princípio do privilégio mínimo: apenas portas essenciais estão expostas.
+
+Load Balancer: Configurado como interno por padrão (pode ser alterado para público via variáveis do Terraform).
+
+🧹 Limpeza de Recursos (Destroy)
+
+Bash
 cd monitoring_tf
 terraform destroy -var-file=monitoring.tfvars
-📌 Observações
-Configurações dos serviços ficam em:
+📌 Estrutura de Arquivos
 
-roles/\*/files
+As configurações customizadas dos serviços estão localizadas em:
 
-roles/\*/templates
+roles/\*/files: Arquivos estáticos e binários.
 
-Plugins do Grafana são instalados automaticamente via role.
+roles/\*/templates: Arquivos de configuração dinâmicos (Jinja2).
 
-👨‍💻 Autor
-Projeto de estudo e automação de infraestrutura para monitoramento utilizando Infrastructure as Code.
+Nota: Os plugins do Grafana e dashboards base são provisionados automaticamente durante a execução da Role.
 
-```
-
-```
+👨‍💻 Sobre o Projeto
+Iniciativa focada no estudo de Infrastructure as Code (IaC) e automação de ambientes escaláveis para monitoramento.
