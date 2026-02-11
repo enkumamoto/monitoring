@@ -28,6 +28,9 @@ flowchart TB
     EC2 --> BlackboxExporter
     EC2 --> ProcessExporter
     EC2 --> GitlabExporter
+
+---
+
 📁 Estrutura do Projeto
 .
 ├── monitoring_ansible
